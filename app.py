@@ -54,14 +54,18 @@ def init_db():
     # Students table
     c.execute('''CREATE TABLE IF NOT EXISTS students
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  name TEXT NOT NULL,
+                  first_name TEXT NOT NULL,
+                  last_name TEXT NOT NULL,
                   email TEXT NOT NULL,
-                  english REAL,
-                  professional_life REAL,
-                  algorithm REAL,
-                  web_design REAL,
-                  term1_total REAL,
-                  year TEXT,
+                  class TEXT,
+                  hw1 REAL,
+                  participation REAL,
+                  q1 REAL,
+                  final_khmer REAL,
+                  final_english REAL,
+                  total REAL,
+                  grade TEXT,
+                  comments TEXT,
                   upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   uploaded_by INTEGER,
                   FOREIGN KEY (uploaded_by) REFERENCES users (id))''')
@@ -186,7 +190,7 @@ def upload_file():
             df = pd.read_excel(filepath)
         
         # Validate required columns
-        required_columns = ['name', 'email', 'english', 'professional_life', 'algorithm', 'web_design', 'term1_total', 'year']
+        required_columns = ['first name', 'last name', 'email', 'class', 'hw1', 'participation', 'q1', 'final khmer', 'final english', 'total', 'grade', 'comments']
         missing_columns = [col for col in required_columns if col not in df.columns.str.lower()]
         
         if missing_columns:
@@ -205,10 +209,11 @@ def upload_file():
         
         for _, row in df.iterrows():
             c.execute('''INSERT INTO students 
-                         (name, email, english, professional_life, algorithm, web_design, term1_total, year, uploaded_by)
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                      (row['name'], row['email'], row['english'], row['professional_life'], 
-                       row['algorithm'], row['web_design'], row['term1_total'], row['year'], session['user_id']))
+                         (first_name, last_name, email, class, hw1, participation, q1, final_khmer, final_english, total, grade, comments, uploaded_by)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                      (row['first name'], row['last name'], row['email'], row['class'], 
+                       row['hw1'], row['participation'], row['q1'], row['final khmer'], 
+                       row['final english'], row['total'], row['grade'], row['comments'], session['user_id']))
         
         conn.commit()
         conn.close()
@@ -242,6 +247,13 @@ def send_emails():
     if not student_ids:
         return jsonify({'success': False, 'message': 'No students selected'}), 400
     
+    # Check if email is configured
+    if not app.config.get('MAIL_USERNAME') or not app.config.get('MAIL_PASSWORD'):
+        return jsonify({
+            'success': False, 
+            'message': 'Email not configured. Please go to Settings and configure your email first.'
+        }), 400
+    
     conn = sqlite3.connect('student_results.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -258,16 +270,43 @@ def send_emails():
         
         try:
             # Create email message
+            student_name = f"{student['first_name']} {student['last_name']}"
             msg = Message(
-                subject=f"Academic Results - Term 1, {student['year']}",
+                subject=f"Academic Results - {student['class']}",
                 recipients=[student['email']]
             )
             
-            # Calculate grade
-            average = student['term1_total'] / 4
-            grade = get_grade(average)
+            # Plain text email body (fallback)
+            msg.body = f'''
+Academic Results Report
+Class: {student['class']}
+
+Dear {student_name},
+
+We are pleased to share your academic results for {student['class']}.
+
+Assessment Scores:
+- Homework 1 (HW1): {student['hw1']}
+- Participation: {student['participation']}
+- Quiz 1 (Q1): {student['q1']}
+- Final Exam - Khmer: {student['final_khmer']}
+- Final Exam - English: {student['final_english']}
+
+Total Score: {student['total']}
+Final Grade: {student['grade']}
+
+{f"Teacher Comments: {student['comments']}" if student['comments'] else ''}
+
+Keep up the great work!
+
+Best regards,
+Academic Department
+
+---
+This is an automated email. Please do not reply to this message.
+            '''
             
-            # Email body
+            # HTML email body (for modern email clients)
             msg.html = f'''
             <html>
             <head>
@@ -280,53 +319,57 @@ def send_emails():
                     .result-table th, .result-table td {{ padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }}
                     .result-table th {{ background-color: #667eea; color: white; }}
                     .total {{ font-weight: bold; font-size: 18px; color: #667eea; }}
+                    .grade-badge {{ display: inline-block; padding: 8px 16px; border-radius: 20px; background: #667eea; color: white; font-weight: bold; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                    .comments {{ background: #fff3cd; padding: 15px; border-radius: 5px; margin-top: 15px; border-left: 4px solid #ffc107; }}
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
                         <h1>Academic Results Report</h1>
-                        <p>Term 1 - {student['year']}</p>
+                        <p>Class: {student['class']}</p>
                     </div>
                     <div class="content">
-                        <h2>Dear {student['name']},</h2>
-                        <p>We are pleased to share your academic results for Term 1, {student['year']}.</p>
+                        <h2>Dear {student_name},</h2>
+                        <p>We are pleased to share your academic results for {student['class']}.</p>
                         
                         <table class="result-table">
                             <tr>
-                                <th>Subject</th>
+                                <th>Assessment</th>
                                 <th>Score</th>
                             </tr>
                             <tr>
-                                <td>English</td>
-                                <td>{student['english']}</td>
+                                <td>Homework 1 (HW1)</td>
+                                <td>{student['hw1']}</td>
                             </tr>
                             <tr>
-                                <td>Professional Life</td>
-                                <td>{student['professional_life']}</td>
+                                <td>Participation</td>
+                                <td>{student['participation']}</td>
                             </tr>
                             <tr>
-                                <td>Algorithm</td>
-                                <td>{student['algorithm']}</td>
+                                <td>Quiz 1 (Q1)</td>
+                                <td>{student['q1']}</td>
                             </tr>
                             <tr>
-                                <td>Web Design</td>
-                                <td>{student['web_design']}</td>
+                                <td>Final Exam - Khmer</td>
+                                <td>{student['final_khmer']}</td>
+                            </tr>
+                            <tr>
+                                <td>Final Exam - English</td>
+                                <td>{student['final_english']}</td>
                             </tr>
                             <tr class="total">
-                                <td>Total</td>
-                                <td>{student['term1_total']}</td>
+                                <td>Total Score</td>
+                                <td>{student['total']}</td>
                             </tr>
                             <tr class="total">
-                                <td>Average</td>
-                                <td>{average:.2f}</td>
-                            </tr>
-                            <tr class="total">
-                                <td>Grade</td>
-                                <td>{grade}</td>
+                                <td>Final Grade</td>
+                                <td><span class="grade-badge">{student['grade']}</span></td>
                             </tr>
                         </table>
+                        
+                        {f'<div class="comments"><strong>Teacher Comments:</strong><br>{student["comments"]}</div>' if student['comments'] else ''}
                         
                         <p>Keep up the great work!</p>
                         <p>Best regards,<br>Academic Department</p>
@@ -340,26 +383,35 @@ def send_emails():
             '''
             
             # Send email
-            mail.send(msg)
-            
-            # Log success
-            c.execute('''INSERT INTO email_logs 
-                         (student_id, student_name, student_email, status, sent_by)
-                         VALUES (?, ?, ?, ?, ?)''',
-                      (student['id'], student['name'], student['email'], 'success', session['user_id']))
-            
-            success_count += 1
-            results.append({'id': student['id'], 'name': student['name'], 'status': 'success'})
+            try:
+                mail.send(msg)
+                
+                # Log success
+                c.execute('''INSERT INTO email_logs 
+                             (student_id, student_name, student_email, status, sent_by)
+                             VALUES (?, ?, ?, ?, ?)''',
+                          (student['id'], student_name, student['email'], 'success', session['user_id']))
+                
+                success_count += 1
+                results.append({'id': student['id'], 'name': student_name, 'status': 'success'})
+                
+            except Exception as email_error:
+                # Log failure with detailed error
+                error_msg = f"{type(email_error).__name__}: {str(email_error)}"
+                c.execute('''INSERT INTO email_logs 
+                             (student_id, student_name, student_email, status, sent_by, error_message)
+                             VALUES (?, ?, ?, ?, ?, ?)''',
+                          (student['id'], student_name, student['email'], 'failed', session['user_id'], error_msg))
+                
+                failed_count += 1
+                results.append({'id': student['id'], 'name': student_name, 'status': 'failed', 'error': error_msg})
+                print(f"Error sending to {student_name}: {error_msg}")  # Print to console for debugging
             
         except Exception as e:
-            # Log failure
-            c.execute('''INSERT INTO email_logs 
-                         (student_id, student_name, student_email, status, sent_by, error_message)
-                         VALUES (?, ?, ?, ?, ?, ?)''',
-                      (student['id'], student['name'], student['email'], 'failed', session['user_id'], str(e)))
-            
+            # Catch any other errors (like invalid student data)
+            error_msg = f"General error: {str(e)}"
+            print(f"Error processing student {student_id}: {error_msg}")
             failed_count += 1
-            results.append({'id': student['id'], 'name': student['name'], 'status': 'failed', 'error': str(e)})
     
     conn.commit()
     conn.close()
@@ -424,10 +476,12 @@ def get_stats():
     
     # Average scores
     avg_scores = c.execute('''SELECT 
-                              AVG(english) as avg_english,
-                              AVG(professional_life) as avg_professional,
-                              AVG(algorithm) as avg_algorithm,
-                              AVG(web_design) as avg_web_design
+                              AVG(hw1) as avg_hw1,
+                              AVG(participation) as avg_participation,
+                              AVG(q1) as avg_q1,
+                              AVG(final_khmer) as avg_final_khmer,
+                              AVG(final_english) as avg_final_english,
+                              AVG(total) as avg_total
                               FROM students WHERE uploaded_by = ?''', (session['user_id'],)).fetchone()
     
     conn.close()
@@ -438,10 +492,12 @@ def get_stats():
             'total_students': total_students,
             'total_sent': total_sent,
             'total_failed': total_failed,
-            'avg_english': round(avg_scores['avg_english'] or 0, 2),
-            'avg_professional': round(avg_scores['avg_professional'] or 0, 2),
-            'avg_algorithm': round(avg_scores['avg_algorithm'] or 0, 2),
-            'avg_web_design': round(avg_scores['avg_web_design'] or 0, 2)
+            'avg_hw1': round(avg_scores['avg_hw1'] or 0, 2),
+            'avg_participation': round(avg_scores['avg_participation'] or 0, 2),
+            'avg_q1': round(avg_scores['avg_q1'] or 0, 2),
+            'avg_final_khmer': round(avg_scores['avg_final_khmer'] or 0, 2),
+            'avg_final_english': round(avg_scores['avg_final_english'] or 0, 2),
+            'avg_total': round(avg_scores['avg_total'] or 0, 2)
         }
     })
 
@@ -449,17 +505,32 @@ def get_stats():
 @login_required
 def update_email_config():
     data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    
+    if not email or not password:
+        return jsonify({'success': False, 'message': 'Email and password are required'}), 400
     
     # Update email configuration
-    app.config['MAIL_USERNAME'] = data.get('email')
-    app.config['MAIL_PASSWORD'] = data.get('password')
-    app.config['MAIL_DEFAULT_SENDER'] = data.get('email')
+    app.config['MAIL_USERNAME'] = email
+    app.config['MAIL_PASSWORD'] = password
+    app.config['MAIL_DEFAULT_SENDER'] = email
+    
+    # Save to .env file for persistence
+    try:
+        env_path = os.path.join(os.path.dirname(__file__), '.env')
+        with open(env_path, 'w') as f:
+            f.write(f'MAIL_USERNAME={email}\n')
+            f.write(f'MAIL_PASSWORD={password}\n')
+            f.write(f'SECRET_KEY=your-secret-key-change-in-production\n')
+    except Exception as e:
+        print(f"Warning: Could not save to .env file: {e}")
     
     # Reinitialize mail
     global mail
     mail = Mail(app)
     
-    return jsonify({'success': True, 'message': 'Email configuration updated successfully'})
+    return jsonify({'success': True, 'message': 'Email configuration updated and saved successfully'})
 
 def get_grade(average):
     if average >= 90:

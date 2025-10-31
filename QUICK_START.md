@@ -30,19 +30,23 @@
 ## 📊 CSV File Format
 
 ```csv
-name,email,english,professional_life,algorithm,web_design,term1_total,year
-John Doe,john@example.com,85,90,78,92,345,2024
+First name,Last name,Email,Class,HW1,Participation,Q1,Final Khmer,Final English,Total,Grade,Comments
+John,Doe,john@example.com,Web Development,95,90,88,85,92,450,A,Excellent work
 ```
 
 **Required Columns:**
-- `name` - Student name
-- `email` - Student email
-- `english` - English score (0-100)
-- `professional_life` - Professional Life score (0-100)
-- `algorithm` - Algorithm score (0-100)
-- `web_design` - Web Design score (0-100)
-- `term1_total` - Total score
-- `year` - Academic year
+- `First name` - Student's first name
+- `Last name` - Student's last name
+- `Email` - Student's email address
+- `Class` - Class or course name
+- `HW1` - Homework 1 score
+- `Participation` - Participation score
+- `Q1` - Quiz 1 score
+- `Final Khmer` - Final exam Khmer score
+- `Final English` - Final exam English score
+- `Total` - Total points
+- `Grade` - Letter grade (A+, A, B+, B, etc.)
+- `Comments` - Teacher comments
 
 ## 🎯 Features at a Glance
 

@@ -79,11 +79,11 @@ You should see:
 Create a file named `sample_students.csv` with this content:
 
 ```csv
-name,email,english,professional_life,algorithm,web_design,term1_total,year
-Alice Johnson,alice@example.com,92,88,95,90,365,2024
-Bob Smith,bob@example.com,78,82,75,80,315,2024
-Charlie Brown,charlie@example.com,85,90,88,92,355,2024
-Diana Prince,diana@example.com,95,93,90,94,372,2024
+First name,Last name,Email,Class,HW1,Participation,Q1,Final Khmer,Final English,Total,Grade,Comments
+Alice,Johnson,alice@example.com,Web Development,95,90,88,85,92,450,A,Excellent work
+Bob,Smith,bob@example.com,Data Science,78,85,82,75,80,400,B,Good progress
+Charlie,Brown,charlie@example.com,Web Development,88,92,85,90,88,443,A,Strong analytical skills
+Diana,Prince,diana@example.com,Web Development,95,95,93,94,96,473,A+,Outstanding performance
 ```
 
 **Note:** Replace `@example.com` with real email addresses for testing (preferably your own email to verify it works).
@@ -134,10 +134,10 @@ pip install -r requirements.txt
 ### Issue 4: CSV Upload Fails
 
 **Solution:**
-- Verify all required columns are present (name, email, english, professional_life, algorithm, web_design, term1_total, year)
+- Verify all required columns are present (First name, Last name, Email, Class, HW1, Participation, Q1, Final Khmer, Final English, Total, Grade, Comments)
 - Column names must match exactly (case doesn't matter)
 - Email addresses must be valid
-- Scores should be numbers (0-100)
+- Scores should be numbers
 
 ## 🔐 Security Checklist
 

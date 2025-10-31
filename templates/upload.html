@@ -111,14 +111,18 @@
                     <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-200">
                         <h3 class="font-semibold text-gray-800 mb-2">Required Columns:</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
-                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">name</code> - Student's full name</li>
-                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">email</code> - Student's email address</li>
-                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">english</code> - English score (0-100)</li>
-                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">professional_life</code> - Professional Life score (0-100)</li>
-                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">algorithm</code> - Algorithm score (0-100)</li>
-                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">web_design</code> - Web Design score (0-100)</li>
-                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">term1_total</code> - Total score for Term 1</li>
-                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">year</code> - Academic year (e.g., 2024)</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">First name</code> - Student's first name</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Last name</code> - Student's last name</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Email</code> - Student's email address</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Class</code> - Class or course name</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">HW1</code> - Homework 1 score</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Participation</code> - Participation score</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Q1</code> - Quiz 1 score</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Final Khmer</code> - Final exam Khmer score</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Final English</code> - Final exam English score</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Total</code> - Total points</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Grade</code> - Letter grade (A+, A, B, etc.)</li>
+                            <li><code class="bg-white px-2 py-1 rounded text-purple-600">Comments</code> - Teacher comments</li>
                         </ul>
                     </div>
 
@@ -127,9 +131,9 @@
                             <i class="fas fa-download mr-2"></i>Sample CSV Format:
                         </h3>
                         <div class="bg-white p-4 rounded font-mono text-sm overflow-x-auto">
-                            <pre>name,email,english,professional_life,algorithm,web_design,term1_total,year
-John Doe,john@example.com,85,90,78,92,345,2024
-Jane Smith,jane@example.com,92,88,95,89,364,2024</pre>
+                            <pre>First name,Last name,Email,Class,HW1,Participation,Q1,Final Khmer,Final English,Total,Grade,Comments
+John,Doe,john@example.com,Web Development,95,90,88,85,92,450,A,Excellent work
+Jane,Smith,jane@example.com,Data Science,92,88,95,89,94,458,A,Outstanding</pre>
                         </div>
                         <button onclick="downloadSample()" class="mt-3 bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-all">
                             <i class="fas fa-download mr-2"></i>Download Sample File
@@ -245,10 +249,10 @@ Jane Smith,jane@example.com,92,88,95,89,364,2024</pre>
         }
 
         function downloadSample() {
-            const sampleData = `name,email,english,professional_life,algorithm,web_design,term1_total,year
-John Doe,john@example.com,85,90,78,92,345,2024
-Jane Smith,jane@example.com,92,88,95,89,364,2024
-Michael Johnson,michael@example.com,78,85,88,91,342,2024`;
+            const sampleData = `First name,Last name,Email,Class,HW1,Participation,Q1,Final Khmer,Final English,Total,Grade,Comments
+John,Doe,john@example.com,Web Development,95,90,88,85,92,450,A,Excellent work
+Jane,Smith,jane@example.com,Data Science,92,88,95,89,94,458,A,Outstanding performance
+Michael,Johnson,michael@example.com,Web Development,78,85,88,91,87,429,A,Good progress`;
 
             const blob = new Blob([sampleData], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);

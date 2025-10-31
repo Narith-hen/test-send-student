@@ -135,7 +135,7 @@ Navigate to: **http://localhost:5000**
 
 ### 📋 students
 Stores student information and scores
-- name, email, scores (4 subjects), total, year
+- First name, Last name, Email, Class, HW1, Participation, Q1, Final Khmer, Final English, Total, Grade, Comments
 
 ### 👤 users  
 Manages teacher/admin accounts
@@ -174,15 +174,16 @@ Tracks email delivery status
 
 ---
 
-## 🎓 Subjects Tracked
+## 🎓 Assessments Tracked
 
-1. **English** (0-100)
-2. **Professional Life** (0-100)
-3. **Algorithm** (0-100)
-4. **Web Design** (0-100)
-5. **Term 1 Total** (Sum of all)
-6. **Average** (Auto-calculated)
-7. **Grade** (A-F, Auto-assigned)
+1. **HW1** - Homework 1 score
+2. **Participation** - Participation score
+3. **Q1** - Quiz 1 score
+4. **Final Khmer** - Final exam Khmer
+5. **Final English** - Final exam English
+6. **Total** - Total points
+7. **Grade** - Letter grade (A+, A, B+, B, etc.)
+8. **Comments** - Teacher feedback
 
 ---
 

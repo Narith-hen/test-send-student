@@ -140,23 +140,27 @@ The application will start at `http://localhost:5000`
 
 1. Navigate to "Upload Results" page
 2. Prepare your CSV/Excel file with required columns:
-   - `name` - Student's full name
-   - `email` - Student's email address
-   - `english` - English score (0-100)
-   - `professional_life` - Professional Life score (0-100)
-   - `algorithm` - Algorithm score (0-100)
-   - `web_design` - Web Design score (0-100)
-   - `term1_total` - Total score for Term 1
-   - `year` - Academic year (e.g., 2024)
+   - `First name` - Student's first name
+   - `Last name` - Student's last name
+   - `Email` - Student's email address
+   - `Class` - Class or course name
+   - `HW1` - Homework 1 score
+   - `Participation` - Participation score
+   - `Q1` - Quiz 1 score
+   - `Final Khmer` - Final exam Khmer score
+   - `Final English` - Final exam English score
+   - `Total` - Total points
+   - `Grade` - Letter grade (A+, A, B+, B, etc.)
+   - `Comments` - Teacher comments
 
 3. Drag & drop or click to upload file
 4. Click "Upload Results"
 
 **Sample CSV Format:**
 ```csv
-name,email,english,professional_life,algorithm,web_design,term1_total,year
-John Doe,john@example.com,85,90,78,92,345,2024
-Jane Smith,jane@example.com,92,88,95,89,364,2024
+First name,Last name,Email,Class,HW1,Participation,Q1,Final Khmer,Final English,Total,Grade,Comments
+John,Doe,john@example.com,Web Development,95,90,88,85,92,450,A,Excellent work
+Jane,Smith,jane@example.com,Data Science,92,88,95,89,94,458,A,Outstanding performance
 ```
 
 ### Step 2: Preview & Select Students
@@ -212,14 +216,18 @@ test-send-student/
 
 ### Students Table
 - `id` - Primary key
-- `name` - Student name
+- `first_name` - Student first name
+- `last_name` - Student last name
 - `email` - Student email
-- `english` - English score
-- `professional_life` - Professional Life score
-- `algorithm` - Algorithm score
-- `web_design` - Web Design score
-- `term1_total` - Total score
-- `year` - Academic year
+- `class` - Class or course name
+- `hw1` - Homework 1 score
+- `participation` - Participation score
+- `q1` - Quiz 1 score
+- `final_khmer` - Final exam Khmer score
+- `final_english` - Final exam English score
+- `total` - Total points
+- `grade` - Letter grade
+- `comments` - Teacher comments
 - `upload_date` - Upload timestamp
 - `uploaded_by` - User ID (foreign key)
 

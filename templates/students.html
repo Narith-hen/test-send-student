@@ -101,14 +101,15 @@
                                 </th>
                                 <th class="px-6 py-4 text-left">Name</th>
                                 <th class="px-6 py-4 text-left">Email</th>
-                                <th class="px-6 py-4 text-center">English</th>
-                                <th class="px-6 py-4 text-center">Prof. Life</th>
-                                <th class="px-6 py-4 text-center">Algorithm</th>
-                                <th class="px-6 py-4 text-center">Web Design</th>
+                                <th class="px-6 py-4 text-center">Class</th>
+                                <th class="px-6 py-4 text-center">HW1</th>
+                                <th class="px-6 py-4 text-center">Participation</th>
+                                <th class="px-6 py-4 text-center">Q1</th>
+                                <th class="px-6 py-4 text-center">Final Khmer</th>
+                                <th class="px-6 py-4 text-center">Final English</th>
                                 <th class="px-6 py-4 text-center">Total</th>
-                                <th class="px-6 py-4 text-center">Average</th>
                                 <th class="px-6 py-4 text-center">Grade</th>
-                                <th class="px-6 py-4 text-center">Year</th>
+                                <th class="px-6 py-4 text-center">Comments</th>
                             </tr>
                         </thead>
                         <tbody id="studentsTable" class="divide-y divide-gray-200">
@@ -183,27 +184,28 @@
             emptyState.classList.add('hidden');
 
             tbody.innerHTML = studentsToDisplay.map(student => {
-                const average = (student.term1_total / 4).toFixed(2);
-                const grade = getGrade(average);
-                const gradeColor = getGradeColor(grade);
+                const studentName = `${student.first_name} ${student.last_name}`;
+                const gradeColor = getGradeColor(student.grade);
+                const truncatedComments = student.comments && student.comments.length > 30 ? student.comments.substring(0, 30) + '...' : (student.comments || '-');
 
                 return `
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4">
                             <input type="checkbox" class="student-checkbox w-5 h-5 text-purple-600 rounded focus:ring-2 focus:ring-purple-500" data-id="${student.id}">
                         </td>
-                        <td class="px-6 py-4 font-semibold text-gray-800">${student.name}</td>
+                        <td class="px-6 py-4 font-semibold text-gray-800">${studentName}</td>
                         <td class="px-6 py-4 text-gray-600">${student.email}</td>
-                        <td class="px-6 py-4 text-center"><span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full">${student.english}</span></td>
-                        <td class="px-6 py-4 text-center"><span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">${student.professional_life}</span></td>
-                        <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">${student.algorithm}</span></td>
-                        <td class="px-6 py-4 text-center"><span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full">${student.web_design}</span></td>
-                        <td class="px-6 py-4 text-center font-bold text-gray-800">${student.term1_total}</td>
-                        <td class="px-6 py-4 text-center font-semibold">${average}</td>
+                        <td class="px-6 py-4 text-center text-gray-700">${student.class}</td>
+                        <td class="px-6 py-4 text-center"><span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full">${student.hw1}</span></td>
+                        <td class="px-6 py-4 text-center"><span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">${student.participation}</span></td>
+                        <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">${student.q1}</span></td>
+                        <td class="px-6 py-4 text-center"><span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full">${student.final_khmer}</span></td>
+                        <td class="px-6 py-4 text-center"><span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full">${student.final_english}</span></td>
+                        <td class="px-6 py-4 text-center font-bold text-gray-800">${student.total}</td>
                         <td class="px-6 py-4 text-center">
-                            <span class="px-3 py-1 rounded-full font-bold ${gradeColor}">${grade}</span>
+                            <span class="px-3 py-1 rounded-full font-bold ${gradeColor}">${student.grade}</span>
                         </td>
-                        <td class="px-6 py-4 text-center text-gray-600">${student.year}</td>
+                        <td class="px-6 py-4 text-center text-sm text-gray-600" title="${student.comments || ''}">${truncatedComments}</td>
                     </tr>
                 `;
             }).join('');
@@ -216,23 +218,14 @@
             document.getElementById('totalCount').textContent = studentsToDisplay.length;
         }
 
-        function getGrade(average) {
-            if (average >= 90) return 'A';
-            if (average >= 80) return 'B';
-            if (average >= 70) return 'C';
-            if (average >= 60) return 'D';
-            return 'F';
-        }
-
         function getGradeColor(grade) {
-            const colors = {
-                'A': 'bg-green-100 text-green-800',
-                'B': 'bg-blue-100 text-blue-800',
-                'C': 'bg-yellow-100 text-yellow-800',
-                'D': 'bg-orange-100 text-orange-800',
-                'F': 'bg-red-100 text-red-800'
-            };
-            return colors[grade] || 'bg-gray-100 text-gray-800';
+            const gradeUpper = (grade || '').toUpperCase();
+            if (gradeUpper.startsWith('A')) return 'bg-green-100 text-green-800';
+            if (gradeUpper.startsWith('B')) return 'bg-blue-100 text-blue-800';
+            if (gradeUpper.startsWith('C')) return 'bg-yellow-100 text-yellow-800';
+            if (gradeUpper.startsWith('D')) return 'bg-orange-100 text-orange-800';
+            if (gradeUpper.startsWith('F')) return 'bg-red-100 text-red-800';
+            return 'bg-gray-100 text-gray-800';
         }
 
         // Select all functionality
@@ -258,8 +251,10 @@
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
             const filtered = students.filter(student => 
-                student.name.toLowerCase().includes(searchTerm) ||
-                student.email.toLowerCase().includes(searchTerm)
+                student.first_name.toLowerCase().includes(searchTerm) ||
+                student.last_name.toLowerCase().includes(searchTerm) ||
+                student.email.toLowerCase().includes(searchTerm) ||
+                student.class.toLowerCase().includes(searchTerm)
             );
             displayStudents(filtered);
         });

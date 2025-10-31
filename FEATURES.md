@@ -127,14 +127,18 @@ The professional HTML email includes:
 ## 🗄️ Database Features
 
 ### Students Table
-- ✅ Student name
+- ✅ Student first name
+- ✅ Student last name
 - ✅ Email address
-- ✅ English score
-- ✅ Professional Life score
-- ✅ Algorithm score
-- ✅ Web Design score
-- ✅ Term 1 total
-- ✅ Academic year
+- ✅ Class/course name
+- ✅ HW1 score
+- ✅ Participation score
+- ✅ Q1 score
+- ✅ Final Khmer score
+- ✅ Final English score
+- ✅ Total points
+- ✅ Letter grade
+- ✅ Teacher comments
 - ✅ Upload timestamp
 - ✅ User tracking (uploaded_by)
 
